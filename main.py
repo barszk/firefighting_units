@@ -191,3 +191,40 @@ def delete_fire():
     fire.unit.fires.remove(fire)
     listbox_fires.delete(idx[0])
     update_all_markers()
+
+    def show_unit_details():
+        idx = listbox_units.curselection()
+        if not idx:
+            messagebox.showerror("Błąd", "Wybierz jednostkę!")
+            return
+        unit = fire_units[idx[0]]
+        if unit.firefighters:
+            details = "Strażacy:\n" + "\n".join(f" - {ff.name}" for ff in unit.firefighters)
+        else:
+            details = "Brak strażaków."
+        messagebox.showinfo(f"Szczegóły: {unit.name}", details)
+
+    def show_only_units():
+        clear_markers()
+        for unit in fire_units:
+            m = map_widget.set_marker(unit.coordinates[0], unit.coordinates[1], text=f"Jednostka: {unit.name}")
+            active_markers.append(m)
+
+    def show_only_fires():
+        clear_markers()
+        for fire in fires:
+            m = map_widget.set_marker(fire.coordinates[0], fire.coordinates[1], text=f"Pożar: {fire.location}")
+            active_markers.append(m)
+
+    def show_selected_unit_fires():
+        idx = listbox_units.curselection()
+        if not idx:
+            messagebox.showerror("Błąd", "Wybierz jednostkę!")
+            return
+        unit = fire_units[idx[0]]
+        clear_markers()
+        m = map_widget.set_marker(unit.coordinates[0], unit.coordinates[1], text=f"Jednostka: {unit.name}")
+        active_markers.append(m)
+        for fire in unit.fires:
+            m = map_widget.set_marker(fire.coordinates[0], fire.coordinates[1], text=f"Pożar: {fire.location}")
+            active_markers.append(m)
